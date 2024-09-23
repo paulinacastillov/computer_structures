@@ -54,17 +54,17 @@ class SparseMatrix {
         }
     
 
-        // Define a comparison function
+        // Define a order function such return a bolean
         static bool compareSparseRow(const SparseRow* a, const SparseRow* b) {
             if (a->getRow() == b->getRow()) {
-                return a->getCol() < b->getCol();  // Sort by column if rows are equal
+                return a->getCol() < b->getCol();  // We check if b position is greater than a position if they share row 
             }
-            return a->getRow() < b->getRow();  // Sort by row first
+            return a->getRow() < b->getRow();  // If they don't share row we just check which row is smaller
         }
 
 
         void sortMatrix() {
-            std::sort(myMatrix.begin(), myMatrix.end(), compareSparseRow);  // Use the comparison function
+            std::sort(myMatrix.begin(), myMatrix.end(), compareSparseRow);  // Use the comparison function to roder the rows in a lexicograph strucure
         }
 
         
@@ -111,7 +111,7 @@ class SparseMatrix {
                         resultMatrix[a->getRow()][b->getCol()] += a->getValue() * b->getValue();
                     }
                 }
-            }
+            } // It could be an error if the common value is not zero
 
             // Create a new SparseMatrix to store the non-zero results
             SparseMatrix* result = new SparseMatrix(noRows, M.noCols, commonValue);
@@ -184,7 +184,7 @@ class SparseMatrix {
             }
 
             return result;
-        }
+        }// IT COULD BE NICE TO ORDER THE MATRIX AT THE END
 
 
         //Display the matrix in its sparse table format
@@ -199,7 +199,7 @@ class SparseMatrix {
         //Display matrix in its original format
         void displayMatrix() const {
             // Step 1: Initialize a 2D array filled with commonValue
-            vector<vector<int> > fullMatrix(noRows, vector<int>(noCols, commonValue));
+            vector<vector<int> > fullMatrix(noRows, vector<int>(noCols, commonValue)); // the space is super important > > because the compiler  needs it for some reazon (?)
 
             // Step 2: Place non-sparse values in the correct positions
             for (int i = 0; i < myMatrix.size(); ++i) {
@@ -210,7 +210,7 @@ class SparseMatrix {
             // Step 3: Print the matrix in its full form
             for (int i = 0; i < noRows; i++) {
                 for (int j = 0; j < noCols; j++) {
-                    cout << fullMatrix[i][j] << " ";
+                    cout << fullMatrix[i][j] << "\t";
                 }
                 cout << endl;
             }
@@ -218,48 +218,151 @@ class SparseMatrix {
 
 
 
-        //other methods that are necessary such as get and set
+        void inputMatrixManually1() {
+    addValue(0, 0, 100);
+    addValue(0, 3, 900);
+    addValue(0, 5, 500);
+    addValue(1, 4, 200);
+    addValue(1, 7, 300);
+    addValue(2, 1, 400);
+    addValue(2, 6, 800);
+    addValue(3, 2, 200);
+    addValue(4, 0, 1600);
+    addValue(4, 4, 700);
+}
+
+void inputMatrixManually2() {
+    addValue(0, 1, 25);
+    addValue(0, 6, 49);
+    addValue(1, 3, 36);
+    addValue(2, 7, 101);
+    addValue(3, 0, 67);
+    addValue(3, 5, 72);
+    addValue(4, 3, 44);
+    addValue(4, 5, 93);
+    addValue(5, 1, 55);
+    addValue(6, 3, 76);
+    addValue(7, 3, 85);
+    addValue(7, 5, 23);
+}
 };
 
-int main() {
-    int r, c;
-    cout << "Insert the number of rows" << endl;
-    cin >> r;
-    cout << "Insert the number of columns" << endl;
-    cin >> c;
-    
-    SparseMatrix matrix1 = SparseMatrix(r, c, 0);
-    matrix1.inputMatrix();
-    matrix1.displaySparse();
 
-    cout << "Insert the number of rows" << endl;
-    cin >> r;
-    cout << "Insert the number of columns" << endl;
-    cin >> c;
- 
-    SparseMatrix matrix2 = SparseMatrix(r, c, 0);
-    matrix2.inputMatrix();
-    matrix2.displaySparse();
+int main () {
 
-    SparseMatrix* result1 = matrix1.Add(matrix2);
+    int n, m, cv, noNSV;
 
-    if (result1) {
-        cout << "Sum:" << endl;
-        result1->displayMatrix();
-    }    
+    SparseMatrix* temp;
+    cin >> n >> m >> cv ; // I took out NoNSV because it wasnt useful
+    SparseMatrix* firstOne = new SparseMatrix(n, m, cv);
+    firstOne->inputMatrix();
 
-    SparseMatrix* result2 = matrix1.Multiply(matrix2);
+    cin >> n >> m >> cv ;
+    SparseMatrix* secondOne = new SparseMatrix(n, m, cv);
+    secondOne->inputMatrix();
 
-    if (result2) {
-        cout << "Multiply:" << endl;
-        result2->displayMatrix();
-    }
- 
-    //SparseMatrix* tr = matrix1.Transpose();
-    //tr->displayMatrix();
-    
-    //tr->sortMatrix();
-    //tr->displayMatrix();
+    cout << "First one in matrix format" << endl;
+    (*firstOne).displayMatrix();
 
-    return 0;
+    cout << "First one in sparse matrix format" << endl;
+    (*firstOne).displaySparse();
+
+    cout << "Second one in matrix format" << endl;
+    (*secondOne).displayMatrix();
+
+    cout << "Second one in sparse matrix format" << endl;
+    (*secondOne).displaySparse();
+
+    SparseMatrix* anotherCopy = new SparseMatrix(*secondOne);
+
+    cout << "Transpose of the first one in matrix" << endl;
+    SparseMatrix* tr = firstOne->Transpose();
+    tr->displayMatrix();
+
+
+    cout << "Matrix Addition Result" << endl;
+    temp = ((firstOne)->Add(*secondOne));
+    temp->displayMatrix();
+
+    cout << "Matrix Multiplication Result" << endl;
+    temp = ((firstOne)->Multiply(*secondOne));
+    temp->displayMatrix();
+
 }
+
+// int main() {
+//     int r, c, cv;
+//     cout << "Insert the number of rows" << endl;
+//     cin >> r;
+//     cout << "Insert the number of columns" << endl;
+//     cin >> c;
+//     cout << "Insert the common value" << endl;
+//     cin >> cv;
+    
+//     SparseMatrix matrix1 = SparseMatrix(r, c, cv);
+//     matrix1.inputMatrix();
+//     matrix1.displaySparse();
+
+//     cout << "Insert the number of rows" << endl;
+//     cin >> r;
+//     cout << "Insert the number of columns" << endl;
+//     cin >> c;
+//     cout << "Insert the common value" << endl;
+//     cin >> cv;
+ 
+//     SparseMatrix matrix2 = SparseMatrix(r, c, cv);
+//     matrix2.inputMatrix();
+//     matrix2.displaySparse();
+
+//     SparseMatrix* result1 = matrix1.Add(matrix2);
+
+//     if (result1) {
+//         cout << "Sum:" << endl;
+//         result1->displayMatrix();
+//     }    
+
+//     SparseMatrix* result2 = matrix1.Multiply(matrix2);
+
+//     if (result2) {
+//         cout << "Multiply:" << endl;
+//         result2->displayMatrix();
+//     }
+ 
+//     //SparseMatrix* tr = matrix1.Transpose();
+//     //tr->displayMatrix();
+    
+//     //tr->sortMatrix();
+//     //tr->displayMatrix();
+
+//     return 0;
+// }
+
+// int main() {
+//     SparseMatrix matrix1 = SparseMatrix(5, 8, 0);
+//     matrix1.inputMatrixManually1();
+//     matrix1.displaySparse();
+
+//     SparseMatrix* tr = matrix1.Transpose();
+//     cout << "Transpose sparse matrix" << endl;
+//     tr->displaySparse();
+
+//     SparseMatrix matrix2 = SparseMatrix(8, 8, 0);
+//     matrix2.inputMatrixManually2();
+//     matrix2.displaySparse();
+
+//     SparseMatrix* result1 = matrix1.Add(matrix2);
+
+//     if (result1) {
+//         cout << "Sum:" << endl;
+//         result1->displayMatrix();
+//     }    
+
+//     SparseMatrix* result2 = matrix1.Multiply(matrix2);
+
+//     if (result2) {
+//         cout << "Multiply:" << endl;
+//         result2->displayMatrix();
+//     }
+
+//     return 0;
+// }
