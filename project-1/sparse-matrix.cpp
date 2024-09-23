@@ -253,10 +253,12 @@ int main () {
     int n, m, cv, noNSV;
 
     SparseMatrix* temp;
+    cout << "Enter rows, columns and common value split by enter" << endl;
     cin >> n >> m >> cv ; // I took out NoNSV because it wasnt useful
     SparseMatrix* firstOne = new SparseMatrix(n, m, cv);
     firstOne->inputMatrix();
 
+    cout << "Enter rows, columns and common value split by enter" << endl;
     cin >> n >> m >> cv ;
     SparseMatrix* secondOne = new SparseMatrix(n, m, cv);
     secondOne->inputMatrix();
@@ -278,7 +280,6 @@ int main () {
     cout << "Transpose of the first one in matrix" << endl;
     SparseMatrix* tr = firstOne->Transpose();
     tr->displayMatrix();
-
 
     cout << "Matrix Addition Result" << endl;
     temp = ((firstOne)->Add(*secondOne));
