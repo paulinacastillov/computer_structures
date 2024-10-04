@@ -1,0 +1,17 @@
+Computation Starts
+The output value from this circuit is: 
+1560 1770 1980 2190 2400 
+1395 1590 1785 1980 2175 
+1230 1410 1590 1770 1950 
+1065 1230 1395 1560 1725 
+900 1050 1200 1350 1500 
+***** Showing the connections that were established
+I1,  Output = A100
+I2,  Output = A100
+I3,  Output = S110
+I4,  Output = M130
+A100, Input 1 = I1, Input 2 = I2, Output = S110
+S110, Input 1 = A100, Input 2 = I3, Output = T120
+T120, Input 1 = S110, Output = M130
+M130, Input 1 = T120, Input 2 = I4, Output = O150
+O150, Input 1 = M130
