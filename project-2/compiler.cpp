@@ -147,6 +147,7 @@ public:
     // Display output matrix if it has been computed
     void displayOutput() const {
         if (outputComputed) {
+            cout << "The output value from this circuit is:" << endl;
             for (int i = 0; i < rows; ++i) {
                 for (int j = 0; j < cols; ++j) {
                     cout << computedOutput[i][j] << " ";
@@ -212,6 +213,7 @@ int main() {
 
         // Handling the addition of inputs to CMs
         if (words[0] == "A") {
+            
             string id1 = words[1];
             string id2 = words[2];
 
@@ -224,6 +226,7 @@ int main() {
                 cm2->setInput2(cm1);
             }
             cm1->setOutput(cm2);  // Set output connection
+            
 
         } else if (words[0] == "I") {
             string id = words[1];
@@ -247,6 +250,7 @@ int main() {
             if (inputModule) {
                 inputModule->setMatrix(matrix, rows, cols);
             }
+            
 
         } else if (words[0] == "O") {
             string id = words[1];
@@ -255,6 +259,7 @@ int main() {
             cout << "Computation Starts" << endl;
             outputModule->compute();
             outputModule->displayOutput();
+            
         }
     }
 
