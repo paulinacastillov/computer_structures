@@ -1,0 +1,18 @@
+Computation Starts
+The output value from this circuit is: 
+-9312 -10848 -12384 -13920 
+-21024 -24096 -27168 -30240 
+-32736 -37344 -41952 -46560 
+-44448 -50592 -56736 -62880 
+***** Showing the connections that were established
+I1,  Output = A200
+I2,  Output = A200
+I3,  Output = S210
+I4,  Output = M230
+I5,  Output = M240
+A200, Input 1 = I1, Input 2 = I2, Output = S210
+S210, Input 1 = A200, Input 2 = I3, Output = T220
+T220, Input 1 = S210, Output = M230
+M230, Input 1 = T220, Input 2 = I4, Output = M240
+M240, Input 1 = M230, Input 2 = I5, Output = O260
+O260, Input 1 = M240

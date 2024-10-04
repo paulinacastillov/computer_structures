@@ -1,0 +1,13 @@
+Computation Starts
+The output value from this circuit is: 
+Matrices are not compatible for multiplication at M120.
+***** Showing the connections that were established
+I1,  Output = A100
+I2,  Output = A100
+I3,  Output = M120
+I4,  Output = S130
+A100, Input 1 = I1, Input 2 = I2, Output = T110
+M120, Input 1 = T110, Input 2 = I3, Output = S130
+T110, Input 1 = A100, Output = M120
+S130, Input 1 = M120, Input 2 = I4, Output = O50
+O50, Input 1 = S130
