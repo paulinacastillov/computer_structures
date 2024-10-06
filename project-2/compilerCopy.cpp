@@ -49,114 +49,125 @@ public:
     }
 
     // Main computation function for the CM
-    void compute() {
-        // If already computed or computation failed, don't compute again, but still display connections.
-        if (outputComputed || computationFailed) return;
+   // Main computation function for the CM
+void compute() {
+    // If already computed or computation failed, don't compute again, but still display connections.
+    if (outputComputed || computationFailed) return;
 
-        // Perform addition for 'A' type CMs
-        if (CMType == 'A') {
-            if (input1 && input2) {
-                input1->compute();
-                input2->compute();
 
-                // Check if the matrix dimensions are compatible for addition
-                if (input1->rows != input2->rows || input1->cols != input2->cols ) {
-                    cout << "Matrices are not compatible for addition at " << id << "." << endl;
-                    computationFailed = true;
-                } else {
-                    rows = input1->rows;
-                    cols = input1->cols;
-                    computedOutput.resize(rows, vector<int>(cols));
-                    for (int i = 0; i < rows; ++i) {
-                        for (int j = 0; j < cols; ++j) {
-                            computedOutput[i][j] = input1->computedOutput[i][j] + input2->computedOutput[i][j];
-                        }
-                    }
-                }
-            }
-        }
+    // Perform addition for 'A' type CMs
+    if (CMType == 'A') {
+        if (input1 && input2) {
+            input1->compute();
+            if (input1->computationFailed) return; // Stop if any input has failed
+            input2->compute();
+            if (input2->computationFailed) return; // Stop if any input has failed
 
-        // Perform subtraction for 'S' type CMs
-        else if (CMType == 'S') {
-            if (input1 && input2) {
-                input1->compute();
-                input2->compute();
-
-                // Check if the matrix dimensions are compatible for subtraction
-                if (input1->rows != input2->rows || input1->cols != input2->cols  ) {
-                    cout << "Matrices are not compatible for subtraction at " << id << "." << endl;
-                    computationFailed = true;
-                } else {
-                    rows = input1->rows;
-                    cols = input1->cols;
-                    computedOutput.resize(rows, vector<int>(cols));
-                    for (int i = 0; i < rows; ++i) {
-                        for (int j = 0; j < cols; ++j) {
-                            computedOutput[i][j] = input1->computedOutput[i][j] - input2->computedOutput[i][j];
-                        }
-                    }
-                }
-            }
-        }
-
-        // Perform multiplication for 'M' type CMs
-        else if (CMType == 'M') {
-            if (input1 && input2) {
-                input1->compute();
-                input2->compute();
-
-                // Check if the matrix dimensions are compatible for multiplication
-                if (input1->cols != input2->rows  ) {
-                    cout << "Matrices are not compatible for multiplication at " << id << "." << endl;
-                    computationFailed = true;
-                } else {
-                    rows = input1->rows;
-                    cols = input2->cols;
-                    computedOutput.resize(rows, vector<int>(cols, 0));
-                    for (int i = 0; i < rows; ++i) {
-                        for (int j = 0; j < cols; ++j) {
-                            for (int k = 0; k < input1->cols; ++k) {
-                                computedOutput[i][j] += input1->computedOutput[i][k] * input2->computedOutput[k][j];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Perform transpose for 'T' type CMs
-        else if (CMType == 'T') {
-            if (input1) {
-                input1->compute();
-                rows = input1->cols;
-                cols = input1->rows;
+            // Check if the matrix dimensions are compatible for addition
+            if ((input1->rows != input2->rows || input1->cols != input2->cols) && !input1->computationFailed && !input2->computationFailed) {
+                cout << "Matrices are not compatible for addition at " << id << "." << endl;
+                computationFailed = true;
+                return;  // Stop further computation
+            } else {
+                rows = input1->rows;
+                cols = input1->cols;
                 computedOutput.resize(rows, vector<int>(cols));
                 for (int i = 0; i < rows; ++i) {
                     for (int j = 0; j < cols; ++j) {
-                        computedOutput[i][j] = input1->computedOutput[j][i];
+                        computedOutput[i][j] = input1->computedOutput[i][j] + input2->computedOutput[i][j];
                     }
                 }
             }
         }
+    }
 
-        // Perform simple output copy for 'O' type CMs
-        else if (CMType == 'O') {
-            if (input1) {
-                input1->compute();
-                rows = input1->getRows();
-                cols = input1->getCols();
-                computedOutput = input1->getComputedOutput(); // Copy the result from input1
+    // Perform subtraction for 'S' type CMs
+    else if (CMType == 'S') {
+        if (input1 && input2) {
+            input1->compute();
+            if (input1->computationFailed) return; // Stop if any input has failed
+            input2->compute();
+            if (input2->computationFailed) return; // Stop if any input has failed
+
+            // Check if the matrix dimensions are compatible for subtraction
+            if ((input1->rows != input2->rows || input1->cols != input2->cols) && !input1->computationFailed && !input2->computationFailed) {
+                cout << "Matrices are not compatible for subtraction at " << id << "." << endl;
+                computationFailed = true;
+                return;  // Stop further computation
+            } else {
+                rows = input1->rows;
+                cols = input1->cols;
+                computedOutput.resize(rows, vector<int>(cols));
+                for (int i = 0; i < rows; ++i) {
+                    for (int j = 0; j < cols; ++j) {
+                        computedOutput[i][j] = input1->computedOutput[i][j] - input2->computedOutput[i][j];
+                    }
+                }
             }
         }
-
-        outputComputed = true;  // Mark as computed, even if the computation failed
     }
-    
+
+    // Perform multiplication for 'M' type CMs
+    else if (CMType == 'M') {
+        if (input1 && input2) {
+            input1->compute();
+            if (input1->computationFailed) return; // Stop if any input has failed
+            input2->compute();
+            if (input2->computationFailed) return; // Stop if any input has failed
+
+            // Check if the matrix dimensions are compatible for multiplication
+            if (input1->cols != input2->rows && !input1->computationFailed && !input2->computationFailed) {
+                cout << "Matrices are not compatible for multiplication at " << id << "." << endl;
+                computationFailed = true;
+                return;  // Stop further computation
+            } else {
+                rows = input1->rows;
+                cols = input2->cols;
+                computedOutput.resize(rows, vector<int>(cols, 0));
+                for (int i = 0; i < rows; ++i) {
+                    for (int j = 0; j < cols; ++j) {
+                        for (int k = 0; k < input1->cols; ++k) {
+                            computedOutput[i][j] += input1->computedOutput[i][k] * input2->computedOutput[k][j];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Perform transpose for 'T' type CMs (no need to stop computation here)
+    else if (CMType == 'T') {
+        if (input1) {
+            input1->compute();
+            rows = input1->cols;
+            cols = input1->rows;
+            computedOutput.resize(rows, vector<int>(cols));
+            for (int i = 0; i < rows; ++i) {
+                for (int j = 0; j < cols; ++j) {
+                    computedOutput[i][j] = input1->computedOutput[j][i];
+                }
+            }
+        }
+    }
+
+    // Perform simple output copy for 'O' type CMs (no need to stop computation here)
+    else if (CMType == 'O') {
+        if (input1) {
+            input1->compute();
+            if (input1->computationFailed) return;  // Stop if input computation failed
+            rows = input1->getRows();
+            cols = input1->getCols();
+            computedOutput = input1->getComputedOutput(); // Copy the result from input1
+        }
+    }
+
+    outputComputed = true;  // Mark as computed, even if the computation failed
+}
 
     // Display output matrix if it has been computed
     void displayOutput() const {
         if (outputComputed) {
-            cout << "The output value from this circuit is:" << endl;
+            
             for (int i = 0; i < rows; ++i) {
                 for (int j = 0; j < cols; ++j) {
                     cout << computedOutput[i][j] << " ";
@@ -266,6 +277,7 @@ int main() {
 
             CM* outputModule = findCMById(allCMs, numCMs, id);
             cout << "Computation Starts" << endl;
+            cout << "The output value from this circuit is:" << endl;
             outputModule->compute();
             outputModule->displayOutput();
             
