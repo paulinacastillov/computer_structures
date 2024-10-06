@@ -5,6 +5,8 @@
 
 using namespace std;
 
+bool anyFailed = false;
+
 // CM class to represent Compute Modules
 class CM {
 private:
@@ -51,7 +53,8 @@ public:
     // Main computation function for the CM
     void compute() {
         // If already computed or computation failed, don't compute again, but still display connections.
-        if (outputComputed || computationFailed) return;
+
+        if (outputComputed || input1->computationFailed || anyFailed) return;
 
         // Perform addition for 'A' type CMs
         if (CMType == 'A') {
@@ -60,9 +63,11 @@ public:
                 input2->compute();
 
                 // Check if the matrix dimensions are compatible for addition
+                if (anyFailed) {return;}
                 if (input1->rows != input2->rows || input1->cols != input2->cols ) {
                     cout << "Matrices are not compatible for addition at " << id << "." << endl;
                     computationFailed = true;
+                    anyFailed = true;
                 } else {
                     rows = input1->rows;
                     cols = input1->cols;
@@ -83,9 +88,11 @@ public:
                 input2->compute();
 
                 // Check if the matrix dimensions are compatible for subtraction
+                if (anyFailed) {return;}
                 if (input1->rows != input2->rows || input1->cols != input2->cols  ) {
                     cout << "Matrices are not compatible for subtraction at " << id << "." << endl;
                     computationFailed = true;
+                    anyFailed = true;
                 } else {
                     rows = input1->rows;
                     cols = input1->cols;
@@ -101,14 +108,16 @@ public:
 
         // Perform multiplication for 'M' type CMs
         else if (CMType == 'M') {
+            
             if (input1 && input2) {
                 input1->compute();
                 input2->compute();
 
-                // Check if the matrix dimensions are compatible for multiplication
-                if (input1->cols != input2->rows  ) {
+                if (anyFailed) {return;}
+                if (input1->cols != input2->rows) {
                     cout << "Matrices are not compatible for multiplication at " << id << "." << endl;
                     computationFailed = true;
+                    anyFailed = true;
                 } else {
                     rows = input1->rows;
                     cols = input2->cols;
@@ -126,6 +135,7 @@ public:
 
         // Perform transpose for 'T' type CMs
         else if (CMType == 'T') {
+            if (anyFailed) {return;}
             if (input1) {
                 input1->compute();
                 rows = input1->cols;
@@ -136,6 +146,9 @@ public:
                         computedOutput[i][j] = input1->computedOutput[j][i];
                     }
                 }
+            } else {
+                computationFailed = true;
+                anyFailed = true;
             }
         }
 
