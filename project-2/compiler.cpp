@@ -59,7 +59,7 @@ public:
 
                 // Check if the matrix dimensions are compatible for addition
                 if (input1->rows != input2->rows || input1->cols != input2->cols) {
-                    std::cout << "Matrices are not compatible for addition at " << id << "." << std::endl;
+                    cout << "Matrices are not compatible for addition at " << id << "." << endl;
                     computationFailed = true;
                 } else {
                     rows = input1->rows;
@@ -82,7 +82,7 @@ public:
 
                 // Check if the matrix dimensions are compatible for subtraction
                 if (input1->rows != input2->rows || input1->cols != input2->cols) {
-                    std::cout << "Matrices are not compatible for subtraction at " << id << "." << std::endl;
+                    cout << "Matrices are not compatible for subtraction at " << id << "." << endl;
                     computationFailed = true;
                 } else {
                     rows = input1->rows;
@@ -105,7 +105,7 @@ public:
 
                 // Check if the matrix dimensions are compatible for multiplication
                 if (input1->cols != input2->rows) {
-                    std::cout << "Matrices are not compatible for multiplication at " << id << "." << std::endl;
+                    cout << "Matrices are not compatible for multiplication at " << id << "." << endl;
                     computationFailed = true;
                 } else {
                     rows = input1->rows;
